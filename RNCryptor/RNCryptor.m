@@ -388,10 +388,14 @@ static int RN_SecRandomCopyBytes(void *rnd, size_t count, uint8_t *bytes) {
   NSMutableData *data = [NSMutableData dataWithLength:length];
 
   int result;
+#ifdef TARGET_OS_MAC
+#else
   if (SecRandomCopyBytes != NULL) {
     result = SecRandomCopyBytes(NULL, length, data.mutableBytes);
   }
-  else {
+  else
+#endif
+  {
     result = RN_SecRandomCopyBytes(NULL, length, data.mutableBytes);
   }
   NSAssert(result == 0, @"Unable to generate random bytes: %d", errno);
